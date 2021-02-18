@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -14,6 +15,9 @@ const useStyles = makeStyles({
   },
   fullList: {
     width: 'auto',
+  },
+  fullList2: {
+    zIndex: 100,
   },
 });
 
@@ -56,7 +60,8 @@ function TemporaryDrawer({userselect}) {
   );
 
   return (
-    <div>
+    <Fab>
+    <div className='float-left'>
       {['left'].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
@@ -66,6 +71,7 @@ function TemporaryDrawer({userselect}) {
         </React.Fragment>
       ))}
     </div>
+    </Fab>
   );
 }
 

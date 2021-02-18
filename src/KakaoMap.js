@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { GlobalZoomLevel } from './Context';
 import { Dragonball } from './App.js';
 import Navbar from './Navbar';
+import Fab from '@material-ui/core/Fab';
 
 const APP_KEY = '0084e0c6e15e687676ff408fc074def6'
 
@@ -83,14 +84,20 @@ const KakaoMap = ({filter1, filter2, coords, setFilter1, setFilter2, userinfosel
             '        </div>' + 
             '    </div>' +    
             '</div>';
-            /*
+            
             var customOverlay = new kakao.maps.CustomOverlay({
-                map: KakaoMapDefault,
-                position: new kakao.maps.LatLng(e.lat, e.lng),
-                content: filter1 !== '' ? content : '',
-                yAnchord: 1
+                    map: KakaoMapDefault,
+                    position: new kakao.maps.LatLng(e.lat, e.lng),
+                    content: content,
+                    yAnchord: 1
             })
-            */
+        
+            if(zoomlevel > 5) {
+                customOverlay.setMap(null)
+            } else {
+                customOverlay.setMap(KakaoMapDefault)
+            };
+            
 
             // 좌표 변경 확인
             kakao.maps.event.addListener(KakaoMapDefault, 'dragend', function() {
@@ -131,7 +138,10 @@ const KakaoMap = ({filter1, filter2, coords, setFilter1, setFilter2, userinfosel
 // WHEN filter are triggered, trigger the saved setting ... 
 
     return (
-        <div id="KakaoMapLoad" style={{ width: '100vw', height: '80vh' }}></div>
+        <div>
+        <div id="KakaoMapLoad" style={{ width: '80vw', height: '80vh' }}>
+        </div>
+        </div>
         
     );
 
