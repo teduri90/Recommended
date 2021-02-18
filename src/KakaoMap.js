@@ -1,139 +1,140 @@
-/*
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react';
+// import { GlobalZoomLevelProvider } from '../context';
+import { GlobalZoomLevel } from './Context';
+import { Dragonball } from './App.js';
+import Navbar from './Navbar';
 
 const APP_KEY = '0084e0c6e15e687676ff408fc074def6'
 
-const KakaoMap = () => {
-
-  
-  
-  const coords = [
-    { lat:37.500701, lng:127.01066, category: "restaurant" }, 
-    { lat:37.600201, lng:127.050167, category: "restaurant" }, 
-    { lat:37.533201, lng:127.022167, category: "restaurant" }, 
-    { lat:37.566201, lng:127.033167, category: "restaurant" }, 
-    { lat:37.512201, lng:127.075167, category: "hospital" }, 
-    { lat:37.561201, lng:127.011167, category: "hospital" }, 
-    { lat:37.517201, lng:127.087167, category: "hospital" }, 
-    { lat:37.573201, lng:127.016167, category: "hospital" }, 
-    { lat:37.522201, lng:127.012167, category: "hospital" }, 
-    { lat:37.546201, lng:127.116167, category: "cafe" }, 
-    { lat:37.561201, lng:127.022167, category: "cafe" }, 
-    { lat:37.582201, lng:127.016167, category: "cafe" }, 
-    { lat:37.515201, lng:127.051167, category: "cafe"}, 
-    { lat:37.516201, lng:127.012167, category: "cafe" },
-  ];
-
-  const [coordsFilter, setCoorsFilter] = useState(coords);
-
-  const onClickRestaruant = (i) => {
-    setCoorsFilter(coords.filter(e => e.category === "restaurant"));
-    i.preventDefault();
-  };
-
-  const createMap = () => {
+const KakaoMap = ({filter1, filter2, coords, setFilter1, setFilter2, userinfoselect, latitude, longitude, longlatselect,zoomselect, setZoomlevel}) => {
+    
+    const {zoomlevel, settrackZoomlevel} = useContext(Dragonball);
+    const filterchange2 = filter1;
+    const filterchange1 = filter2;
+    
+    useEffect(() => {
     const script = document.createElement('script')
-    script.async = true
+    /// script.async = true
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&autoload=false`
     document.head.appendChild(script)
     script.onload = () => {
-      const { kakao } = window
-      kakao.maps.load(() => {
-        let container = document.getElementById('Mymap')
-        let options = {
-          center: new kakao.maps.LatLng(37.546502, 127.003617),
-          level: 8,
-        };
+        const { kakao } = window
         
-        const createdMap = new kakao.maps.Map(container, options)
+        
+        kakao.maps.load(() => {
+            
+            
+            let container = document.getElementById('KakaoMapLoad')
+            let options = {
+                center: new kakao.maps.LatLng(latitude, longitude),
+                // center: new kakao.maps.LatLng(latitude, longitude),
+                level: zoomlevel,
+                // level: zoomlevel,
+            };
+        const KakaoMapDefault = new kakao.maps.Map(container, options)        
+        //console.log(filter1);
+        //console.log(filter2);
+        //console.log(coords);
 
-        for (var i=0; i<coordsFilter.length; i++){
-          let marker = new kakao.maps.Marker({
-            map: createdMap,
-            position: new kakao.maps.LatLng(coordsFilter[i].lat, coordsFilter[i].lng),
-          })
-        };
-      
-      })
-    }
-  }
+        var coordsFilter = coords;
 
-  useEffect(() => {createMap()}, [coordsFilter]);
-
-  return (
-        <div>
-        <div id="Mymap" style={{ width: '100vw', height: '80vh' }}></div>
-        <button onClick={onClickRestaruant}> ++</button>
-        </div>
-   );
-};
-  
-export default KakaoMap; */
-  
-
-  /*
-  const [map, setMap] = useState(null)
-  const [markerArr, setMarkerArr] = useState([])
-  const [locationArr, setLocationArr] = useState([])
-
-  const getLocation = async id => {
-    const data = await fetch(`http://localhost:3000/data${id}.json`)
-    const dataJSON = await data.json()
-    setLocationArr(dataJSON.location)
-  }
-
-  const createMap = () => {
-    const script = document.createElement('script')
-    script.async = true
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&autoload=false`
-    document.head.appendChild(script)
-    script.onload = () => {
-      const { kakao } = window
-      kakao.maps.load(() => {
-        let container = document.getElementById('Mymap')
-        let options = {
-          center: new kakao.maps.LatLng(37.506502, 127.053617),
-          level: 7,
+        if(filter1 !== '' && filter2 !== '') {
+            coordsFilter = coords.filter(e => e.category === filter1 && e.user === filter2);
+            //setFilter1('');
+            //setFilter2('');
+        } else if (filter1 !== '') {
+            coordsFilter = coords.filter(e => e.category === filter1);
+            //setFilter1('');
+        } else if (filter2 !== '') {
+            coordsFilter = coords.filter(e => e.user === filter2);
+            //setFilter2('');
+        } else {
+            coordsFilter = coords;
         }
-        const createdMap = new kakao.maps.Map(container, options)
-        setMap(createdMap)
-      })
-    }
-  }
 
-  const createMarker = () => {
-    const { kakao } = window
-    const tempArr = []
-    locationArr.forEach(e => {
-      tempArr.push(
-        new kakao.maps.Marker({
-          map: map,
-          position: new kakao.maps.LatLng(e.mapY, e.mapX),
-        })
-      )
-    })
-    setMarkerArr(tempArr)
-  }
+        coordsFilter.forEach((e) => {
+            var imageSrc = 'https://picsum.photos/id/237/200/200', // 마커이미지의 주소입니다    
+            imageSize = new kakao.maps.Size(40, 40), // 마커이미지의 크기입니다
+            imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+            
+            var markerImage = new kakao.maps.MarkerImage(e.src, imageSize, imageOption)
+                
+            const marker = new kakao.maps.Marker({
+                map: KakaoMapDefault,
+                position: new kakao.maps.LatLng(e.lat, e.lng),
+                image: markerImage,
+            })
 
-  const deleteMarker = () => markerArr.forEach(e => e.setMap(null))
+            var content = '<div class="wrap">' + 
+            '    <div class="info">' + 
+            '        <div class="title">' + 
+            '            카카오 스페이스닷원' + 
+            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '        </div>' + 
+            '        <div class="body">' + 
+            '            <div class="img">' +
+            '                <img src="https://picsum.photos/id/100/200/200" width="73" height="70">' +
+            '           </div>' + 
+            '            <div class="desc">' + 
+            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
+            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
+            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+            '            </div>' + 
+            '        </div>' + 
+            '    </div>' +    
+            '</div>';
+            /*
+            var customOverlay = new kakao.maps.CustomOverlay({
+                map: KakaoMapDefault,
+                position: new kakao.maps.LatLng(e.lat, e.lng),
+                content: filter1 !== '' ? content : '',
+                yAnchord: 1
+            })
+            */
 
-  useEffect(() => {
-    getLocation(1) // location 정보 fetch
-    createMap()
-  }, [])
+            // 좌표 변경 확인
+            kakao.maps.event.addListener(KakaoMapDefault, 'dragend', function() {
+                var latlng = KakaoMapDefault.getBounds(); 
+                var centerget = KakaoMapDefault.getCenter();
+                var zoomget = KakaoMapDefault.getLevel();
+                //console.log(latlng)
+                var oaoa = latlng.oa;
+                var haha = latlng.ha;
+                var qaqa = latlng.qa;
+                var papa = latlng.pa;
+                var centercenter = centerget;
+                var zoomzoom = zoomget;
 
-  // marker 생성 + 표시
-  useEffect(() => map && locationArr.length && createMarker(), [map,locationArr,])
+                //console.log(oaoa);
+                //console.log(centercenter);
+                //console.log(centercenter.La);
+                //console.log(centercenter.Ma);
+                //console.log(zoomzoom);
+                console.log(zoomlevel);
+                zoomselect(zoomzoom);
+                longlatselect(centercenter);
+                //setNavLatitude(centercenter.La);
+                //setNavLongitude(centercenter.Ma);
+                // settrackZoomlevel(centercenter);
 
-  return (
-    <div className="App">
-      <div
-        onClick={() => getLocation(2)}
-        style={{ ...divBtnOpt, backgroundColor: 'red', left: '100px' }}
-      />
-      <div
-        onClick={deleteMarker}
-        style={{ ...divBtnOpt, backgroundColor: 'blue', left: '150px' }}
-      />
-      <div id="Mymap" style={{ width: '100vw', height: '100vh' }}></div>
-    </div>*/
+            })        
+
+            // 클릭 시 관련 정보 표시 // 혹은 페이지 내 정보 검색 후 Info 창 표시
+            kakao.maps.event.addListener(marker, 'click', function(mouseEvent) {  
+                userinfoselect(marker.position);       
+                console.log(marker.position);
+            });
+
+        });
+    }); // SCRIPT 종료
+}},[zoomlevel, filterchange1, filterchange2]);
+// WHEN filter are triggered, trigger the saved setting ... 
+
+    return (
+        <div id="KakaoMapLoad" style={{ width: '100vw', height: '80vh' }}></div>
+        
+    );
+
+};
+
+export default KakaoMap;
