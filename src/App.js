@@ -62,9 +62,10 @@ const App = () => {
         setLatitude(e.Ma);
     };
 
+
     return (
         <div>
-            <Dragonball.Provider value={{zoomlevel, setZoomlevel}}>
+            <Dragonball.Provider value={{zoomlevel, setZoomlevel, setLongitude, setLatitude, settrackZoomlevel}}>
                 <Navbar menuselect={menuselect} />
                 <TemporaryDrawer userselect={userselect} />
                 <KakaoMap filter1={filter1} filter2={filter2} setFilter1={setFilter1} setFilter2={setFilter2} coords={coords} userinfoselect={userinfoselect} zoomselect={zoomselect} longlatselect={longlatselect} setLatitude={setLatitude} setLongitude={setLongitude} latitude={latitude} longitude={longitude} zoomlevel={zoomlevel} setZoomlevel={setZoomlevel}/>

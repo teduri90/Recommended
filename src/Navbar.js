@@ -47,7 +47,7 @@ const Navbar = ({menuselect}) => {
             <MenuItem onClick={()=>menuselect('')} className={classes.menuitem}>
                 All
             </MenuItem>
-            <MenuItem onClick={()=>setZoomlevel(2)} className={classes.menuitem}>
+            <MenuItem onClick={()=>setZoomlevel(7)} className={classes.menuitem}>
                 Restaurant
             </MenuItem>
             <MenuItem onClick={()=>menuselect(cafe)} className={classes.menuitem}>
